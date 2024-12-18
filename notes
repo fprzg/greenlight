@@ -1,0 +1,20 @@
+# Crear usuario y data base
+SELECT current_user;
+CREATE DATABASE greenlight;
+
+\c greenlight;
+SELECT greenlight;
+
+CREATE ROLE greenlight WITH LOGIN PASSWORD 'pa55word';
+CREATE EXTENSION IF NOT EXISTS citext;
+
+
+
+# Connect to the data base from the Linux cli
+psql --host=localhost --dbname=greenlight --username=greenlight
+
+# Show the config file
+sudo -u postgres psql -c 'SHOW config_file'
+
+# DSN
+postgres://greenlight:pa55word@localhost/greenlight
