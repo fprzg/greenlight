@@ -1,0 +1,8 @@
+http://45.55.49.87 {
+    reserve_proxy localhost:4000
+}
+
+http://greenlight.alexedwards.net {
+    respond /debug/* "Not Permitted" 403
+    reverse_proxy localhost:4000
+}
