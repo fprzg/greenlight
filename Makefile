@@ -1,7 +1,11 @@
-include .envrc
+-include .envrc
+
+
 
 # ==================================================================================== #
+#
 # HELPERS
+#
 # ==================================================================================== #
 
 ## help: print this help message
@@ -14,14 +18,29 @@ help:
 confirm:
 	@echo -n 'Are you sure? [y/N] ' && read ans && [ $${ans:-N} = y ]
 
+
+
 # ==================================================================================== #
+#
 # DEVELOPMENT
+#
 # ==================================================================================== #
+
+## run/setup: setup the development environment.
+.PHONY: run/setup
+run/setup:
+	@cp .envrc.example .envrc && echo ".envrc copied."
+	sudo -i -u postgres psql <$(PWD)/scripts/psql/create.sql
 
 ## run/api: run the ./cmd/api application
 .PHONY: run/api
 run/api:
 	go run ./cmd/api -db-dsn=${GREENLIGHT_DB_DSN}
+
+## db/clean: Clean the database and user.
+.PHONY: db/clean
+db/clean: 
+	sudo -i -u postgres psql <$(PWD)/scripts/psql/destroy.sql
 
 ## db/psql: connect to the database using psql
 .PHONY: db/psql
@@ -40,8 +59,12 @@ db/migrations/up: confirm
 	@echo 'Running up migrations'
 	migrate -path ./migrations -database ${GREENLIGHT_DB_DSN} up
 
+
+
 # ==================================================================================== #
+#
 # QUALITY CONTROL
+#
 # ==================================================================================== #
 
 ## audit: tidy dependencies and format, vet and test all code
@@ -66,8 +89,12 @@ vendor:
 	@echo 'Vendoring dependencies'
 	go mod vendor
 
+
+
 # ==================================================================================== #
+#
 # BUILD
+#
 # ==================================================================================== #
 
 current_time = $(shell date --iso-8601=seconds)
@@ -81,3 +108,4 @@ build/api:
 	@echo ${current_time}
 	go build -ldflags=${linker_flags} -o=./bin/api ./cmd/api
 	GOOS=linux GOARCH=amd64 go build -ldflags=${linker_flags} -o=./bin/linux_amd64/api ./cmd/api
+

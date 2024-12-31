@@ -1,0 +1,1 @@
+export GREENLIGHT_DB_DSN="postgres://greenlight:pa55w0rd@localhost/greenlight"
